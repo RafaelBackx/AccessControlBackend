@@ -8,12 +8,15 @@ import java.util.List;
 
 @Entity
 public class Door {
-    private String name;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-    @ManyToMany(mappedBy = "doors")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int id;
+    private String name;
+    @ManyToMany
     private List<Widget> widgets;
+
+    public Door(){}
+
     public String getName() {
         return name;
     }
@@ -28,5 +31,14 @@ public class Door {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    @Override
+    public String toString() {
+        return "Door{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", widgets=" + widgets +
+                '}';
     }
 }

@@ -1,26 +1,23 @@
-package hhh.acs.model;
+package hhh.acs.database.dto;
 
+import hhh.acs.model.Door;
 import org.hibernate.validator.constraints.UniqueElements;
 
 import javax.persistence.*;
 import java.math.BigInteger;
 import java.util.List;
 
-@Entity
-public class Widget {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+public class WidgetDTO {
     private int id;
     private String name;
     private BigInteger duration;
     private String color;
     private String icon;
-    @ManyToMany
     private List<Door> doors;
 
-    public Widget(){}
+    public WidgetDTO(){}
 
-    public Widget(String name, BigInteger  duration, String color, List<Door> doors, String icon){
+    public WidgetDTO(String name, BigInteger  duration, String color, List<Door> doors, String icon){
         this.setName(name);
         this.setDuration(duration);
         this.setColor(color);
