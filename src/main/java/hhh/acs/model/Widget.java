@@ -1,5 +1,7 @@
 package hhh.acs.model;
 
+import org.hibernate.validator.constraints.UniqueElements;
+
 import javax.persistence.*;
 import java.math.BigInteger;
 import java.util.List;
@@ -9,6 +11,7 @@ public class Widget {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @UniqueElements(message = "Naam moet uniek zijn")
     private String name;
     private BigInteger duration;
     private String color;
@@ -72,5 +75,17 @@ public class Widget {
 
     public void setIcon(String icon) {
         this.icon = icon;
+    }
+
+    @Override
+    public String toString() {
+        return "Widget{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", duration=" + duration +
+                ", color='" + color + '\'' +
+                ", icon='" + icon + '\'' +
+                ", doors=" + doors +
+                '}';
     }
 }

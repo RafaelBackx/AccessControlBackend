@@ -1,16 +1,16 @@
 package hhh.acs.model;
 
+import net.bytebuddy.dynamic.loading.InjectionClassLoader;
 import org.springframework.context.annotation.Primary;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.*;
 import java.util.List;
 
 @Entity
 public class Door {
     private String name;
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @ManyToMany(mappedBy = "doors")
     private List<Widget> widgets;
