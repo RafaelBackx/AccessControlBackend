@@ -12,7 +12,7 @@ public class Door {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
     private String name;
-    @ManyToMany
+    @ManyToMany(mappedBy = "doors")
     private List<Widget> widgets;
 
     public Door(){}

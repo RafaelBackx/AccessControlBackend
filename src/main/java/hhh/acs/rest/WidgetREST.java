@@ -41,4 +41,6 @@ public class WidgetREST {
         widgetRepository.save(widget);
         return "doors created";
     }
+
+    //TODO add remove path
 }

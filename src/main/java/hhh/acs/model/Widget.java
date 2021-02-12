@@ -15,7 +15,13 @@ public class Widget {
     private BigInteger duration;
     private String color;
     private String icon;
-    @ManyToMany
+    @ManyToMany(cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE
+    })
+    @JoinTable(name = "widget_door",
+            joinColumns = @JoinColumn(name = "widget_id"),
+            inverseJoinColumns = @JoinColumn(name = "door_id"))
     private List<Door> doors;
 
     public Widget(){}
