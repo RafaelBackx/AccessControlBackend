@@ -2,9 +2,9 @@ package hhh.acs.rest;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import hhh.acs.database.DatabaseException;
 import hhh.acs.database.DoorRepository;
 import hhh.acs.database.WidgetRepository;
-import hhh.acs.database.dto.WidgetDTO;
 import hhh.acs.model.Door;
 import hhh.acs.model.Widget;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +29,14 @@ public class WidgetREST {
     }
 
     @CrossOrigin()
+    @GetMapping("/widgets/{id}")
+    public Widget get(@PathVariable("id") int id){
+        return widgetRepository.findById(id).orElseThrow(() -> new DatabaseException("Widget with " + id + " not found in the database"));
+    }
+
+    @CrossOrigin()
     @PostMapping("/create")
-    public String create(@RequestBody Widget widget){
+    public Widget create(@RequestBody Widget widget){
         System.out.println(widget);
         if (widget.getDoors() != null){
             for (Door door : widget.getDoors()){
@@ -39,8 +45,15 @@ public class WidgetREST {
             }
         }
         widgetRepository.save(widget);
-        return "doors created";
+        return widget;
     }
 
-    //TODO add remove path
+    @CrossOrigin()
+    @DeleteMapping("/delete/{id}")
+    public Widget deleteWidget(@PathVariable("id") int id){
+        System.out.println("deleting widget with id " + id);
+        Widget widget = widgetRepository.findById(id).orElseThrow(() -> new DatabaseException("Widget with " + id + " not found in the database"));
+        widgetRepository.delete(widget);
+        return widget;
+    }
 }

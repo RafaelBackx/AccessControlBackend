@@ -18,7 +18,7 @@ public class Widget {
     @ManyToMany(cascade = {
             CascadeType.PERSIST,
             CascadeType.MERGE
-    })
+    }, fetch = FetchType.EAGER)
     @JoinTable(name = "widget_door",
             joinColumns = @JoinColumn(name = "widget_id"),
             inverseJoinColumns = @JoinColumn(name = "door_id"))
