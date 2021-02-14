@@ -15,13 +15,15 @@ public class Widget {
     private BigInteger duration;
     private String color;
     private String icon;
-    @ManyToMany(cascade = {
-            CascadeType.PERSIST,
-            CascadeType.MERGE
-    }, fetch = FetchType.EAGER)
-    @JoinTable(name = "widget_door",
-            joinColumns = @JoinColumn(name = "widget_id"),
-            inverseJoinColumns = @JoinColumn(name = "door_id"))
+//    @ManyToMany(cascade = {
+//            CascadeType.PERSIST,
+//            CascadeType.MERGE
+//    }, fetch = FetchType.EAGER)
+//    @JoinTable(name = "widget_door",
+//            joinColumns = @JoinColumn(name = "widget_id"),
+//            inverseJoinColumns = @JoinColumn(name = "door_id"))
+//    private List<Door> doors;
+    @OneToMany(mappedBy = "widget", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Door> doors;
 
     public Widget(){}

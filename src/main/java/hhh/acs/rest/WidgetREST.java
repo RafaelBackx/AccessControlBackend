@@ -10,6 +10,7 @@ import hhh.acs.model.Widget;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityManager;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -37,15 +38,19 @@ public class WidgetREST {
     @CrossOrigin()
     @PostMapping("/create")
     public Widget create(@RequestBody Widget widget){
-        System.out.println(widget);
         if (widget.getDoors() != null){
             for (Door door : widget.getDoors()){
-                System.out.println(door);
-                doorRepository.save(door);
+                door.setWidget(widget);
             }
         }
         widgetRepository.save(widget);
-        return widget;
+        if (widget.getDoors() != null){
+            for (Door door : widget.getDoors()){
+                doorRepository.save(door);
+            }
+        }
+        Widget addedWidget = widgetRepository.findById(widget.getId()).orElseGet(() -> null);
+        return addedWidget;
     }
 
     @CrossOrigin()
@@ -55,5 +60,25 @@ public class WidgetREST {
         Widget widget = widgetRepository.findById(id).orElseThrow(() -> new DatabaseException("Widget with " + id + " not found in the database"));
         widgetRepository.delete(widget);
         return widget;
+    }
+
+    @CrossOrigin()
+    @PutMapping("/update/{id}")
+    public String updateWidget(@PathVariable("id") int id, @RequestBody Widget widget){
+        System.out.println(id);
+        List<Door> oldDoors = doorRepository.findAllByWidgetId(id);
+        List<Door> newDoors = widget.getDoors();
+        if (newDoors != null){
+            for (Door door : oldDoors){
+                if (!newDoors.contains(door)){
+                    doorRepository.delete(door);
+                }
+            }
+            for (Door door : newDoors){
+                door.setWidget(widget);
+            }
+        }
+        widgetRepository.save(widget);
+        return widget.toString();
     }
 }
