@@ -1,9 +1,11 @@
 package hhh.acs.controller;
 
+import hhh.acs.database.EventRepository;
 import hhh.acs.model.BiostarAPIRequests;
 import hhh.acs.model.Door;
 import hhh.acs.model.Event;
 import hhh.acs.model.Mode;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.security.KeyManagementException;
@@ -19,6 +21,8 @@ import java.util.concurrent.TimeUnit;
 public class EventController {
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     private BiostarAPIRequests biostarAPIRequests = new BiostarAPIRequests("https://localhost");
+    @Autowired
+    private EventRepository eventRepository;
 
     public EventController() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         biostarAPIRequests.logIn("admin","t");
@@ -40,6 +44,9 @@ public class EventController {
                     e.printStackTrace();
                 }
                 //TODO remove event after completion
+                System.out.println("deleting event");
+                eventRepository.delete(event);
+                System.out.println("event deleted");
             }
         };
         final ScheduledFuture<?> eventHandle = scheduler.schedule(eventExecutor,event.getDuration(), TimeUnit.SECONDS);
