@@ -60,7 +60,6 @@ public class BiostarAPIRequests {
         for (int doorid : doorids){
             rows.add("{\"id\": "+ doorid +"}");
         }
-        System.out.println(rows);
         String body = "{\n" +
                 "  \"DoorCollection\": {\n" +
                 "    \"total\": "+ rows.size() +",\n" +
@@ -72,7 +71,6 @@ public class BiostarAPIRequests {
         headers.set("bs-session-id",this.sessionId);
         HttpEntity<String> request = new HttpEntity<>(body,headers);
         RestTemplate restTemplate = getRestTemplate();
-        System.out.println(request.getBody());
         HttpEntity<String> result = restTemplate.exchange(url,HttpMethod.POST,request,String.class);
         System.out.println(result.getBody());
     }

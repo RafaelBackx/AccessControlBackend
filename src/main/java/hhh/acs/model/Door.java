@@ -1,22 +1,13 @@
 package hhh.acs.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import net.bytebuddy.dynamic.loading.InjectionClassLoader;
-import org.springframework.context.annotation.Primary;
-
 import javax.persistence.*;
-import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Door {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
-    @Column(unique = true)
     private String name;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JsonIgnore
-    private Widget widget;
 
     public Door(){}
 
@@ -44,14 +35,6 @@ public class Door {
                 "}";
     }
 
-    public Widget getWidget() {
-        return widget;
-    }
-
-    public void setWidget(Widget widget) {
-        this.widget = widget;
-    }
-
     @Override
     public boolean equals(Object obj){
         if (obj instanceof Door){
@@ -59,5 +42,10 @@ public class Door {
             return  (other.getId() == this.id);
         }
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

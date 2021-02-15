@@ -5,6 +5,7 @@ import org.hibernate.validator.constraints.UniqueElements;
 import javax.persistence.*;
 import java.math.BigInteger;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 public class Widget {
@@ -12,29 +13,13 @@ public class Widget {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
     private String name;
-    private BigInteger duration;
+    private Long duration;
     private String color;
     private String icon;
-//    @ManyToMany(cascade = {
-//            CascadeType.PERSIST,
-//            CascadeType.MERGE
-//    }, fetch = FetchType.EAGER)
-//    @JoinTable(name = "widget_door",
-//            joinColumns = @JoinColumn(name = "widget_id"),
-//            inverseJoinColumns = @JoinColumn(name = "door_id"))
-//    private List<Door> doors;
-    @OneToMany(mappedBy = "widget", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     private List<Door> doors;
 
     public Widget(){}
-
-    public Widget(String name, BigInteger  duration, String color, List<Door> doors, String icon){
-        this.setName(name);
-        this.setDuration(duration);
-        this.setColor(color);
-        this.setDoors(doors);
-        this.setIcon(icon);
-    }
 
     public int getId() {
         return id;
@@ -52,11 +37,11 @@ public class Widget {
         this.name = name;
     }
 
-    public BigInteger getDuration() {
+    public Long getDuration() {
         return duration;
     }
 
-    public void setDuration(BigInteger duration) {
+    public void setDuration(Long duration) {
         this.duration = duration;
     }
 
@@ -94,5 +79,19 @@ public class Widget {
                 ", icon='" + icon + '\'' +
                 ", doors=" + doors +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Widget){
+            Widget other = (Widget) obj;
+            return  (other.getId() == this.id);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

@@ -1,21 +1,44 @@
 package hhh.acs.rest;
 
+import hhh.acs.controller.EventController;
+import hhh.acs.database.DoorRepository;
+import hhh.acs.database.EventRepository;
 import hhh.acs.model.BiostarAPIRequests;
+import hhh.acs.model.Door;
+import hhh.acs.model.Event;
 import hhh.acs.model.Mode;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.web.bind.annotation.*;
 
+import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneOffset;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @RestController()
 @RequestMapping("/biostar")
 public class BiostarREST {
 
     private BiostarAPIRequests biostarAPIRequests = new BiostarAPIRequests("https://localhost");
+    @Autowired
+    private EventRepository eventRepository;
+    @Autowired
+    private DoorRepository doorRepository;
+    @Autowired
+    private EventController eventController;
+
+    public BiostarREST() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+        biostarAPIRequests.logIn("admin","t");
+    }
 
     @GetMapping("/login")
     public void login() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
@@ -40,4 +63,45 @@ public class BiostarREST {
         int[] ids = {2};
         biostarAPIRequests.lockUnlockReleaseDoor(ids, Mode.RELEASE);
     }
+
+    @CrossOrigin()
+    @PostMapping("/create/event")
+    public void addEvent(@RequestBody Event event) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+        LocalDate currentDate = LocalDate.now();
+        LocalTime currentTime = LocalTime.now();
+        Long unixtimestamp = currentDate.toEpochSecond(currentTime, ZoneOffset.UTC);
+        event.setStartTime(unixtimestamp);
+        List<Door> persistedDoors = new ArrayList<>();
+        for (Door door : event.getDoors()){
+            Door d = doorRepository.findById(door.getId()).orElseGet(() -> null);
+            if (d == null){
+                System.out.println(door);
+                persistedDoors.add(doorRepository.save(door));
+            }
+            else{
+                persistedDoors.add(d);
+            }
+        }
+        event.setDoors(persistedDoors);
+        eventRepository.save(event);
+        var ids = eventController.transformDoorsToIds(event);
+        if (event.isState()){
+            System.out.println("opened");
+            biostarAPIRequests.lockUnlockReleaseDoor(ids,Mode.UNLOCK);
+        }
+        else{
+            System.out.println("closed");
+            biostarAPIRequests.lockUnlockReleaseDoor(ids, Mode.LOCK);
+        }
+        // schedule the event
+        eventController.addEvent(event);
+    }
+
+    @CrossOrigin()
+    @GetMapping("/events")
+    public List<Event> events(){
+        return eventRepository.findAll();
+    }
+
+
 }

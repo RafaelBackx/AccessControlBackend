@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityManager;
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -39,20 +40,21 @@ public class WidgetREST {
     @CrossOrigin()
     @PostMapping("/create")
     public Widget create(@RequestBody Widget widget){
-        if (widget.getDoors() != null){
-            for (Door door : widget.getDoors()){
-                door.setWidget(widget);
+        List<Door> persistedDoors = new ArrayList<>();
+        for (Door door : widget.getDoors()){
+            Door d = doorRepository.findById(door.getId()).orElseGet(() -> null);
+            if (d == null){
+                persistedDoors.add(doorRepository.save(door));
+            }
+            else{
+                persistedDoors.add(d);
             }
         }
-        widgetRepository.save(widget);
-        if (widget.getDoors() != null){
-            for (Door door : widget.getDoors()){
-                doorRepository.save(door);
-            }
-        }
-        Widget addedWidget = widgetRepository.findById(widget.getId()).orElseGet(() -> null);
-        return addedWidget;
+        widget.setDoors(persistedDoors);
+        return widgetRepository.save(widget);
     }
+
+
 
     @CrossOrigin()
     @DeleteMapping("/delete/{id}")
@@ -67,16 +69,14 @@ public class WidgetREST {
     @PutMapping("/update/{id}")
     public String updateWidget(@PathVariable("id") int id, @RequestBody Widget widget){
         System.out.println(id);
-        List<Door> oldDoors = doorRepository.findAllByWidgetId(id);
         List<Door> newDoors = widget.getDoors();
+        Widget oldWidget = widgetRepository.findById(id).orElseThrow(() -> new DatabaseException("Widget with " + id + " not found in the database"));
+        List<Door> oldDoors = oldWidget.getDoors();
         if (newDoors != null){
             for (Door door : oldDoors){
                 if (!newDoors.contains(door)){
                     doorRepository.delete(door);
                 }
-            }
-            for (Door door : newDoors){
-                door.setWidget(widget);
             }
         }
         widgetRepository.save(widget);
