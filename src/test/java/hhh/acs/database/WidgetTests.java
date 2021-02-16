@@ -13,12 +13,9 @@ import static org.junit.Assert.assertEquals;
 @SpringBootTest
 public class WidgetTests {
 
-    @Autowired
-    WidgetRepository widgetRepository;
-    @Autowired
-    DoorRepository doorRepository;
-    @Autowired
-    EventRepository eventRepository;
+    WidgetService widgetRepository = new WidgetService();
+    DoorService doorRepository = new DoorService();
+    EventService eventRepository = new EventService();
 
     @Before
     public void setup(){
@@ -31,9 +28,10 @@ public class WidgetTests {
     }
 
     private void clearDatabase() {
-        eventRepository.deleteAll();
-        widgetRepository.deleteAll();
-        doorRepository.deleteAll();
+        System.out.println("jsflqsjflk");
+//        eventRepository.deleteAll();
+//        widgetRepository.deleteAll();
+//        doorRepository.deleteAll();
     }
 
 }
