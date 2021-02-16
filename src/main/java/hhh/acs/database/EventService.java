@@ -25,4 +25,13 @@ public class EventService {
     public Event insert(Event event){
         return eventRepository.save(event);
     }
+
+    public void deleteId(long id){
+        eventRepository.deleteById(id);
+    }
+
+    public Event delete(Event event){
+        eventRepository.delete(event);
+        return event;
+    }
 }

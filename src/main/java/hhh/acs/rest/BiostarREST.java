@@ -1,15 +1,14 @@
 package hhh.acs.rest;
 
 import hhh.acs.controller.EventController;
-import hhh.acs.database.DoorRepository;
-import hhh.acs.database.EventRepository;
-import hhh.acs.database.WidgetRepository;
+import hhh.acs.database.*;
 import hhh.acs.model.*;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.web.bind.annotation.*;
 
+import javax.xml.crypto.Data;
 import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.security.KeyManagementException;
@@ -29,11 +28,11 @@ public class BiostarREST {
 
     private BiostarAPIRequests biostarAPIRequests = new BiostarAPIRequests("https://localhost");
     @Autowired
-    private EventRepository eventRepository;
+    private EventService eventRepository;
     @Autowired
-    private WidgetRepository widgetrepository;
+    private WidgetService widgetrepository;
     @Autowired
-    private DoorRepository doorRepository;
+    private DoorService doorRepository;
     @Autowired
     private EventController eventController;
 
@@ -75,27 +74,28 @@ public class BiostarREST {
         event.setStartTime(unixtimestamp);
         List<Door> persistedDoors = new ArrayList<>();
         for (Door door : event.getDoors()){
-            Door d = doorRepository.findById(door.getId()).orElseGet(() -> null);
-            if (d == null){
-                System.out.println(door);
-                persistedDoors.add(doorRepository.save(door));
-            }
-            else{
+            try{
+                Door d = doorRepository.get(door.getId());
                 persistedDoors.add(d);
+            }catch (DatabaseException e){
+                System.out.println(e.getMessage());
+                persistedDoors.add(doorRepository.insert(door));
             }
         }
         event.setDoors(persistedDoors);
         // increment widget counter
         var widget = event.getWidget();
         if (widget != null){
-            Widget persistedWidget = widgetrepository.findById(widget.getId()).orElse(null);
-            if (persistedWidget != null){
+            try{
+                Widget persistedWidget = widgetrepository.get(widget.getId());
                 System.out.println("incremented");
                 persistedWidget.increment();
                 widgetrepository.updateCounter(persistedWidget.getCounter(),persistedWidget.getId());
+            }catch (DatabaseException e){
+                System.out.println("Widget does not exist");
             }
         }
-        eventRepository.save(event);
+        eventRepository.insert(event);
         var ids = eventController.transformDoorsToIds(event);
         if (event.isState()){
             System.out.println("opened");
@@ -112,25 +112,22 @@ public class BiostarREST {
     @CrossOrigin()
     @GetMapping("/events")
     public List<Event> getEvents(){
-        return eventRepository.findAll();
+        return eventRepository.getAll();
     }
 
     @CrossOrigin()
     @GetMapping("/events/{id}")
     public List<Event> getEventsByWidget(@PathVariable("id") int widgetId){
-        return eventRepository.findAllByWidgetId(widgetId);
+        return eventRepository.getAllByWidgetId(widgetId);
     }
 
     @CrossOrigin()
     @PostMapping("/events/cancel")
-    public Event cancelEvent(@RequestBody String body){
+    public void cancelEvent(@RequestBody String body){
         JSONObject jsonbody = new JSONObject(body);
         long eventId = jsonbody.getLong("event_id");
         eventController.cancelEvent(eventId);
-        var event = eventRepository.findById(eventId).orElse(null);
-        eventRepository.deleteById(eventId);
-        return event;
+        eventRepository.deleteId(eventId);
     }
-
 
 }
