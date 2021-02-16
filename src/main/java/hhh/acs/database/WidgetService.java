@@ -71,7 +71,7 @@ public class WidgetService {
     public void clear() {
         this.widgetRepository.deleteAll();
     }
-    List<Widget> topUsedWidgets(int amount) {
+    public List<Widget> topUsedWidgets(int amount) {
         return widgetRepository.getTopUsedWidgets(amount);
     }
 }
