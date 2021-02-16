@@ -3,6 +3,7 @@ package hhh.acs.database;
 import hhh.acs.model.Door;
 import hhh.acs.model.Widget;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 
@@ -27,15 +28,14 @@ public class WidgetService {
         return widgetRepository.findById(id).orElseThrow(() -> new DatabaseException("Widget with " + id + " not found in the database"));
     }
 
-    public Widget create(Widget widget) throws DatabaseException{
+    public Widget create(Widget widget){
         List<Door> persistedDoors = new ArrayList<>();
         for (Door door : widget.getDoors()){
-            Door d = doorService.get(widget.getId());
-            if (d == null){
-                persistedDoors.add(doorService.insert(door));
-            }
-            else{
+            try {
+                Door d = doorService.get(door.getId());
                 persistedDoors.add(d);
+            }catch (DatabaseException e){
+                persistedDoors.add(doorService.insert(door));
             }
         }
         widget.setDoors(persistedDoors);
@@ -54,17 +54,14 @@ public class WidgetService {
 
 
     public String updateWidget(int id, Widget widget) throws DatabaseException {
-        List<Door> newDoors = widget.getDoors();
         Widget oldWidget = get(id);
-        List<Door> oldDoors = oldWidget.getDoors();
-        if (newDoors != null){
-            for (Door door : oldDoors){
-                if (!newDoors.contains(door)){
-                    doorService.delete(door);
-                }
-            }
-        }
-        create(widget);
+        oldWidget.setName(widget.getName());
+        oldWidget.setColor(widget.getColor());
+        oldWidget.setIcon(widget.getIcon());
+        oldWidget.setCounter(widget.getCounter());
+        oldWidget.setDuration(widget.getDuration());
+        oldWidget.setDoors(widget.getDoors());
+        create(oldWidget);
         return widget.toString();
     }
 

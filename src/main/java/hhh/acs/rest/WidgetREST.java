@@ -49,12 +49,7 @@ public class WidgetREST {
     @CrossOrigin()
     @PostMapping("/create")
     public Widget create(@RequestBody Widget widget){
-        try {
-            return widgetService.create(widget);
-        } catch (DatabaseException e) {
-            System.out.println(e.getMessage());
-            return null;
-        }
+        return widgetService.create(widget);
     }
 
     @CrossOrigin()
