@@ -54,8 +54,6 @@ public class WidgetREST {
         return widgetRepository.save(widget);
     }
 
-
-
     @CrossOrigin()
     @DeleteMapping("/delete/{id}")
     public Widget deleteWidget(@PathVariable("id") int id){
