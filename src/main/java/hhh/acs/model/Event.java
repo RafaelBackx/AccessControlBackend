@@ -1,5 +1,7 @@
 package hhh.acs.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.*;
 import java.math.BigInteger;
 import java.util.List;
@@ -19,6 +21,7 @@ public class Event {
     private boolean state;
     private Long duration;
     @OneToOne
+    @JsonProperty(value = "widget")
     private Widget widget;
     // unix timestamp
     private Long startTime;
@@ -66,12 +69,21 @@ public class Event {
         this.startTime = startTime;
     }
 
+    public Widget getWidget() {
+        return widget;
+    }
+
+    public void setWidget(Widget widget) {
+        this.widget = widget;
+    }
+
     @Override
     public String toString() {
         return "Event{" +
                 "id=" + id +
                 ", doors=" + doors +
                 ", state=" + state +
+                ", widget=" + widget +
                 ", duration=" + duration +
                 ", startTime=" + startTime +
                 '}';
@@ -79,10 +91,11 @@ public class Event {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Event event = (Event) o;
-        return Objects.equals(id, event.id);
+        if (o instanceof Event){
+            Event other = (Event)o;
+            return  (this.getId() == other.getId());
+        }
+        return false;
     }
 
     @Override

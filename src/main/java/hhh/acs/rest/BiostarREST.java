@@ -3,10 +3,9 @@ package hhh.acs.rest;
 import hhh.acs.controller.EventController;
 import hhh.acs.database.DoorRepository;
 import hhh.acs.database.EventRepository;
-import hhh.acs.model.BiostarAPIRequests;
-import hhh.acs.model.Door;
-import hhh.acs.model.Event;
-import hhh.acs.model.Mode;
+import hhh.acs.database.WidgetRepository;
+import hhh.acs.model.*;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.web.bind.annotation.*;
@@ -25,12 +24,14 @@ import java.util.List;
 import java.util.Set;
 
 @RestController()
-@RequestMapping("/biostar")
+@RequestMapping("/api")
 public class BiostarREST {
 
     private BiostarAPIRequests biostarAPIRequests = new BiostarAPIRequests("https://localhost");
     @Autowired
     private EventRepository eventRepository;
+    @Autowired
+    private WidgetRepository widgetrepository;
     @Autowired
     private DoorRepository doorRepository;
     @Autowired
@@ -67,6 +68,7 @@ public class BiostarREST {
     @CrossOrigin()
     @PostMapping("/create/event")
     public void addEvent(@RequestBody Event event) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+        System.out.println(event);
         LocalDate currentDate = LocalDate.now();
         LocalTime currentTime = LocalTime.now();
         Long unixtimestamp = currentDate.toEpochSecond(currentTime, ZoneOffset.UTC);
@@ -83,6 +85,16 @@ public class BiostarREST {
             }
         }
         event.setDoors(persistedDoors);
+        // increment widget counter
+        var widget = event.getWidget();
+        if (widget != null){
+            Widget persistedWidget = widgetrepository.findById(widget.getId()).orElse(null);
+            if (persistedWidget != null){
+                System.out.println("incremented");
+                persistedWidget.increment();
+                widgetrepository.updateCounter(persistedWidget.getCounter(),persistedWidget.getId());
+            }
+        }
         eventRepository.save(event);
         var ids = eventController.transformDoorsToIds(event);
         if (event.isState()){
@@ -99,8 +111,25 @@ public class BiostarREST {
 
     @CrossOrigin()
     @GetMapping("/events")
-    public List<Event> events(){
+    public List<Event> getEvents(){
         return eventRepository.findAll();
+    }
+
+    @CrossOrigin()
+    @GetMapping("/events/{id}")
+    public List<Event> getEventsByWidget(@PathVariable("id") int widgetId){
+        return eventRepository.findAllByWidgetId(widgetId);
+    }
+
+    @CrossOrigin()
+    @PostMapping("/events/cancel")
+    public Event cancelEvent(@RequestBody String body){
+        JSONObject jsonbody = new JSONObject(body);
+        long eventId = jsonbody.getLong("event_id");
+        eventController.cancelEvent(eventId);
+        var event = eventRepository.findById(eventId).orElse(null);
+        eventRepository.deleteById(eventId);
+        return event;
     }
 
 

@@ -18,6 +18,7 @@ public class Widget {
     private String icon;
     @ManyToMany(fetch = FetchType.EAGER)
     private List<Door> doors;
+    private int counter;
 
     public Widget(){}
 
@@ -69,6 +70,14 @@ public class Widget {
         this.icon = icon;
     }
 
+    public int getCounter() {
+        return counter;
+    }
+
+    public void setCounter(int counter) {
+        this.counter = counter;
+    }
+
     @Override
     public String toString() {
         return "Widget{" +
@@ -93,5 +102,9 @@ public class Widget {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    public void increment() {
+        this.counter++;
     }
 }
