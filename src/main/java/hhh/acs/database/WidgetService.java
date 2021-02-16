@@ -5,6 +5,7 @@ import hhh.acs.model.Widget;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
 import javax.xml.crypto.Data;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +52,7 @@ public class WidgetService {
         widgetRepository.updateCounter(new_counter, id);
     }
 
+
     public String updateWidget(int id, Widget widget) throws DatabaseException {
         List<Door> newDoors = widget.getDoors();
         Widget oldWidget = get(id);
@@ -66,7 +68,10 @@ public class WidgetService {
         return widget.toString();
     }
 
-    public void clear(){
+    public void clear() {
         this.widgetRepository.deleteAll();
+    }
+    List<Widget> topUsedWidgets(int amount) {
+        return widgetRepository.getTopUsedWidgets(amount);
     }
 }

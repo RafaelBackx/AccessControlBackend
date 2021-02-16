@@ -12,6 +12,7 @@ import javax.persistence.EntityManager;
 import javax.validation.Valid;
 import javax.xml.crypto.Data;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -29,6 +30,10 @@ public class WidgetREST {
     public List<Widget> getAll(){
         return widgetService.getAll();
     }
+
+    @CrossOrigin()
+    @GetMapping("/widgets/top5used")
+    public List<Widget> getTopUsedWidgets(){return widgetRepository.getTopUsedWidgets(5);}
 
     @CrossOrigin()
     @GetMapping("/widgets/{id}")
