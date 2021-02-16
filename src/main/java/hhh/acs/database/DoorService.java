@@ -15,12 +15,12 @@ public class DoorService {
         return doorRepository.findAll();
     }
 
-    public Door get(int id){
+    public Door get(int id) throws DatabaseException{
         var door = doorRepository.findById(id);
         return door.orElseThrow(() -> new DatabaseException("Door with id" + id + " does not exist"));
     }
 
-    public Door insert(Door door){
+    public Door insert(Door door) throws IllegalArgumentException{
         if (door != null){
             return doorRepository.save(door);
         }

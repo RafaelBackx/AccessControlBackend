@@ -18,7 +18,7 @@ public class EventService {
         return eventRepository.findAllByWidgetId(id);
     }
 
-    public Event get(long id){
+    public Event get(long id) throws DatabaseException {
         return eventRepository.findById(id).orElseThrow(()-> new DatabaseException("Event with id " + id + " does not exist"));
     }
 
