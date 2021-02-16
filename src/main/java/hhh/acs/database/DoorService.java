@@ -28,4 +28,9 @@ public class DoorService {
             throw new IllegalArgumentException("Door cannot be null");
         }
     }
+
+    public Door delete(Door door) {
+        doorRepository.delete(door);
+        return door;
+    }
 }

@@ -5,6 +5,7 @@ import hhh.acs.model.Widget;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.xml.crypto.Data;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,7 +47,22 @@ public class WidgetService {
         return widget;
     }
 
-    void updateCounter(int new_counter, int id) {
+    public void updateCounter(int new_counter, int id) {
         widgetRepository.updateCounter(new_counter, id);
+    }
+
+    public String updateWidget(int id, Widget widget) throws DatabaseException {
+        List<Door> newDoors = widget.getDoors();
+        Widget oldWidget = get(id);
+        List<Door> oldDoors = oldWidget.getDoors();
+        if (newDoors != null){
+            for (Door door : oldDoors){
+                if (!newDoors.contains(door)){
+                    doorService.delete(door);
+                }
+            }
+        }
+        create(widget);
+        return widget.toString();
     }
 }
