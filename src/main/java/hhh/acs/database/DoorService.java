@@ -33,4 +33,8 @@ public class DoorService {
         doorRepository.delete(door);
         return door;
     }
+
+    public void clear(){
+        doorRepository.deleteAll();
+    }
 }

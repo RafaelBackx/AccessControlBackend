@@ -34,4 +34,8 @@ public class EventService {
         eventRepository.delete(event);
         return event;
     }
+
+    public void clear(){
+        this.eventRepository.deleteAll();
+    }
 }

@@ -23,15 +23,19 @@ public class WidgetTests {
     }
 
     @Test
+    public void testAddWidget(){
+        
+    }
+
+    @Test
     public void test(){
         assertEquals(1,1);
     }
 
     private void clearDatabase() {
-        System.out.println("jsflqsjflk");
-//        eventRepository.deleteAll();
-//        widgetRepository.deleteAll();
-//        doorRepository.deleteAll();
+        eventRepository.clear();
+        widgetRepository.clear();
+        doorRepository.clear();
     }
 
 }

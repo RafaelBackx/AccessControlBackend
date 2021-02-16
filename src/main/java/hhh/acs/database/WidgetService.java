@@ -65,4 +65,8 @@ public class WidgetService {
         create(widget);
         return widget.toString();
     }
+
+    public void clear(){
+        this.widgetRepository.deleteAll();
+    }
 }
