@@ -14,7 +14,7 @@ import static org.junit.Assert.assertEquals;
 public class WidgetTests {
 
     WidgetService widgetRepository = new WidgetService();
-    DoorService doorRepository = new DoorService();
+    // DoorService doorRepository = new DoorService();
     EventService eventRepository = new EventService();
 
     @Before
@@ -35,7 +35,7 @@ public class WidgetTests {
     private void clearDatabase() {
         eventRepository.clear();
         widgetRepository.clear();
-        doorRepository.clear();
+        // doorRepository.clear();
     }
 
 }
