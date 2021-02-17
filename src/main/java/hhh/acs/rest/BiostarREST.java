@@ -66,7 +66,7 @@ public class BiostarREST {
 
     @CrossOrigin()
     @PostMapping("/create/event")
-    public void addEvent(@RequestBody Event event) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+    public Event addEvent(@RequestBody Event event) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         System.out.println(event);
         LocalDate currentDate = LocalDate.now();
         LocalTime currentTime = LocalTime.now();
@@ -95,7 +95,7 @@ public class BiostarREST {
                 System.out.println("Widget does not exist");
             }
         }
-        eventRepository.insert(event);
+        var persistedEvent = eventRepository.insert(event);
         var ids = eventController.transformDoorsToIds(event);
         if (event.isState()){
             System.out.println("opened");
@@ -107,6 +107,7 @@ public class BiostarREST {
         }
         // schedule the event
         eventController.addEvent(event);
+        return persistedEvent;
     }
 
     @CrossOrigin()
