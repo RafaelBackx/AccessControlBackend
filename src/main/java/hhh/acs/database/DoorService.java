@@ -17,8 +17,7 @@ public class DoorService {
 
     public Door get(int id) throws DatabaseException{
         var door = doorRepository.findById(id);
-        return door.orElse(null);
-        //return door.orElseThrow(() -> new DatabaseException("Door with id" + id + " does not exist"));
+        return door.orElseThrow(() -> new DatabaseException("Door with id" + id + " does not exist"));
     }
 
     public Door insert(Door door) throws IllegalArgumentException{
