@@ -63,6 +63,7 @@ public class WidgetTests {
         }
         Door door = new Door();
         door.setName("test door");
+        door.setId(2);
         widgetDoors.add(door);
         widget.setDoors(widgetDoors);
         widgetService.create(widget);
@@ -136,5 +137,6 @@ public class WidgetTests {
     private void clearDatabase() {
         eventService.clear();
         widgetService.clear();
+        doorService.clear();
     }
 }
