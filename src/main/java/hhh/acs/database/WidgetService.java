@@ -2,6 +2,9 @@ package hhh.acs.database;
 
 import hhh.acs.model.Door;
 import hhh.acs.model.Widget;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.Configuration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -68,6 +71,7 @@ public class WidgetService {
     public void clear() {
         this.widgetRepository.deleteAll();
     }
+
     public List<Widget> topUsedWidgets(int amount) {
         return widgetRepository.getTopUsedWidgets(amount);
     }

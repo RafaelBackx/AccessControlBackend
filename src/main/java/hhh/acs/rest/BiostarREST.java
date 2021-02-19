@@ -130,5 +130,4 @@ public class BiostarREST {
         eventController.cancelEvent(eventId);
         eventRepository.deleteId(eventId);
     }
-
 }

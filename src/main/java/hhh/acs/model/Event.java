@@ -13,7 +13,7 @@ public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     private List<Door> doors;
     // open the door or close it
     // true == open
@@ -25,7 +25,6 @@ public class Event {
     private Widget widget;
     // unix timestamp
     private Long startTime;
-
 
     public Event(){}
 
