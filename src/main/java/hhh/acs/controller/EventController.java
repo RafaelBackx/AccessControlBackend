@@ -1,20 +1,19 @@
 package hhh.acs.controller;
 
+import hhh.acs.database.DatabaseException;
 import hhh.acs.database.EventRepository;
 import hhh.acs.model.BiostarAPIRequests;
 import hhh.acs.model.Door;
 import hhh.acs.model.Event;
 import hhh.acs.model.Mode;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -34,8 +33,15 @@ public class EventController {
         biostarAPIRequests.logIn("admin","t");
     }
 
-    public void cancelEvent(long id){
+    public void cancelEvent(long id) throws DatabaseException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         var scheduledEvent = this.scheduledEvents.get(id);
+        Event event = this.eventRepository.findById(id).orElseThrow(()->new DatabaseException("No such event"));
+        List<Door> doors = event.getDoors();
+        int idArray[] = new int [doors.size()];
+        for(int i =0; i<doors.size(); i++){
+           idArray[i] = doors.get(i).getId();
+        }
+        biostarAPIRequests.lockUnlockReleaseDoor(idArray, Mode.RELEASE);
         scheduledEvent.cancel(true);
     }
 

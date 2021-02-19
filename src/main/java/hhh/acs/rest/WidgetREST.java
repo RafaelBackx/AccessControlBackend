@@ -33,7 +33,7 @@ public class WidgetREST {
 
     @CrossOrigin()
     @GetMapping("/widgets/top5used")
-    public List<Widget> getTopUsedWidgets(){return widgetService.topUsedWidgets(5);}
+    public List<Widget> getTopUsedWidgets(){return widgetService.topUsedWidgets(6);}
 
     @CrossOrigin()
     @GetMapping("/widgets/{id}")

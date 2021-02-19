@@ -124,7 +124,7 @@ public class BiostarREST {
 
     @CrossOrigin()
     @PostMapping("/events/cancel")
-    public void cancelEvent(@RequestBody String body){
+    public void cancelEvent(@RequestBody String body) throws DatabaseException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         JSONObject jsonbody = new JSONObject(body);
         long eventId = jsonbody.getLong("event_id");
         eventController.cancelEvent(eventId);
