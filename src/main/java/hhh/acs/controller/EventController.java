@@ -7,7 +7,6 @@ import hhh.acs.model.Door;
 import hhh.acs.model.Event;
 import hhh.acs.model.Mode;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.security.KeyManagementException;
@@ -34,6 +33,7 @@ public class EventController {
     }
 
     public void cancelEvent(long id) throws DatabaseException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+        System.out.println(id);
         var scheduledEvent = this.scheduledEvents.get(id);
         Event event = this.eventRepository.findById(id).orElseThrow(()->new DatabaseException("No such event"));
         List<Door> doors = event.getDoors();

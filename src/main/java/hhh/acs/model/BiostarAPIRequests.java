@@ -11,6 +11,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.net.ssl.HostnameVerifier;
@@ -71,8 +72,14 @@ public class BiostarAPIRequests {
         headers.set("bs-session-id",this.sessionId);
         HttpEntity<String> request = new HttpEntity<>(body,headers);
         RestTemplate restTemplate = getRestTemplate();
-        HttpEntity<String> result = restTemplate.exchange(url,HttpMethod.POST,request,String.class);
-        System.out.println(result.getBody());
+        try{
+            HttpEntity<String> result = restTemplate.exchange(url,HttpMethod.POST,request,String.class);
+        }catch (HttpClientErrorException error){
+            System.out.println("session invalidated, logging back in");
+            logIn("admin","t");
+            lockUnlockReleaseDoor(doorids,mode);
+//            System.out.println(result.getBody());
+        }
     }
 
     public RestTemplate getRestTemplate() throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
