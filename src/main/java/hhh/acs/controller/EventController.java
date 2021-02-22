@@ -35,7 +35,7 @@ public class EventController {
     public void cancelEvent(long id) throws DatabaseException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         System.out.println(id);
         var scheduledEvent = this.scheduledEvents.get(id);
-        Event event = this.eventRepository.findById(id).orElseThrow(()->new DatabaseException("No such event"));
+        Event event = this.eventRepository.findById(id).orElseThrow(()->new DatabaseException("No such event" + id));
         List<Door> doors = event.getDoors();
         int idArray[] = new int [doors.size()];
         for(int i =0; i<doors.size(); i++){
