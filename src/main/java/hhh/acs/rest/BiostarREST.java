@@ -7,6 +7,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
 
 import javax.xml.crypto.Data;
 import java.math.BigInteger;
@@ -46,27 +47,9 @@ public class BiostarREST {
         System.out.println(result);
     }
 
-    @GetMapping("/lock")
-    public void lock() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
-        int[] ids = {2};
-        biostarAPIRequests.lockUnlockReleaseDoor(ids, Mode.LOCK);
-    }
-
-    @GetMapping("/unlock")
-    public void unlock() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
-        int[] ids = {2};
-        biostarAPIRequests.lockUnlockReleaseDoor(ids, Mode.UNLOCK);
-    }
-
-    @GetMapping("/release")
-    public void release() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
-        int[] ids = {2};
-        biostarAPIRequests.lockUnlockReleaseDoor(ids, Mode.RELEASE);
-    }
-
     @CrossOrigin()
     @PostMapping("/create/event")
-    public Event addEvent(@RequestBody Event event) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+    public JSONObject addEvent(@RequestBody Event event) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         System.out.println(event);
         LocalDate currentDate = LocalDate.now();
         LocalTime currentTime = LocalTime.now();
@@ -97,17 +80,22 @@ public class BiostarREST {
         }
         var persistedEvent = eventRepository.insert(event);
         var ids = eventController.transformDoorsToIds(event);
-        if (event.isState()){
-            System.out.println("opened");
+        JSONObject json = new JSONObject();
+        try {
             biostarAPIRequests.lockUnlockReleaseDoor(ids,Mode.UNLOCK);
-        }
-        else{
-            System.out.println("closed");
-            biostarAPIRequests.lockUnlockReleaseDoor(ids, Mode.LOCK);
+            System.out.println("opened");
+        } catch (HttpClientErrorException e) {
+            json.put("id", -1);
+            json.put("message", "kon niet geopend worden!");
+            System.out.println(json);
+            return json;
         }
         // schedule the event
         eventController.addEvent(event);
-        return persistedEvent;
+        json.put("id", persistedEvent.getId());
+        json.put("message", "succesvol geopend!");
+        System.out.println(json);
+        return json;
     }
 
     @CrossOrigin()

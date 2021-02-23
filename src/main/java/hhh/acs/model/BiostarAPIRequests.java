@@ -5,10 +5,7 @@ import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
+import org.springframework.http.*;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.web.client.HttpClientErrorException;
@@ -75,10 +72,14 @@ public class BiostarAPIRequests {
         try{
             HttpEntity<String> result = restTemplate.exchange(url,HttpMethod.POST,request,String.class);
         }catch (HttpClientErrorException error){
-            System.out.println("session invalidated, logging back in");
-            logIn("admin","t");
-            lockUnlockReleaseDoor(doorids,mode);
+            if (error.getStatusCode() == HttpStatus.UNAUTHORIZED) {
+                System.out.println("session invalidated, logging back in");
+                logIn("admin", "t");
+                lockUnlockReleaseDoor(doorids, mode);
 //            System.out.println(result.getBody());
+            } else {
+                throw error;
+            }
         }
     }
 
