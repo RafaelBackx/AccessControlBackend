@@ -9,6 +9,7 @@ import org.springframework.http.*;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.net.ssl.HostnameVerifier;
@@ -71,7 +72,7 @@ public class BiostarAPIRequests {
         RestTemplate restTemplate = getRestTemplate();
         try{
             HttpEntity<String> result = restTemplate.exchange(url,HttpMethod.POST,request,String.class);
-        }catch (HttpClientErrorException error){
+        }catch (HttpClientErrorException | HttpServerErrorException error){
             if (error.getStatusCode() == HttpStatus.UNAUTHORIZED) {
                 System.out.println("session invalidated, logging back in");
                 logIn("admin", "t");

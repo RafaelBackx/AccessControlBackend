@@ -55,9 +55,10 @@ public class EventsTests {
         var persisted_event = eventService.get(events.get(0).getId());
         assertEquals(persisted_event.getStartTime(),event.getStartTime());
         assertEquals(persisted_event.getDuration(),event.getDuration());
-        for (int i=0;i<persisted_event.getDoors().size();i++){
-            assertEquals(persisted_event.getDoors().get(i).getName(),event.getDoors().get(i).getName());
-            assertEquals(persisted_event.getDoors().get(i).getId(),event.getDoors().get(i).getId());
+        List<Door> persisted_doors = persisted_event.getDoors();
+        for (int i=0;i<persisted_doors.size();i++){
+            assertEquals(persisted_event.getDoors().get(i).getName(),persisted_doors.get(i).getName());
+            assertEquals(persisted_event.getDoors().get(i).getId(),persisted_doors.get(i).getId());
         }
     }
 

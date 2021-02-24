@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 
 import javax.xml.crypto.Data;
 import java.math.BigInteger;
@@ -49,7 +50,7 @@ public class BiostarREST {
 
     @CrossOrigin()
     @PostMapping("/create/event")
-    public JSONObject addEvent(@RequestBody Event event) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+    public String addEvent(@RequestBody Event event) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         System.out.println(event);
         LocalDate currentDate = LocalDate.now();
         LocalTime currentTime = LocalTime.now();
@@ -84,18 +85,20 @@ public class BiostarREST {
         try {
             biostarAPIRequests.lockUnlockReleaseDoor(ids,Mode.UNLOCK);
             System.out.println("opened");
-        } catch (HttpClientErrorException e) {
+        } catch (HttpClientErrorException | HttpServerErrorException e) {
             json.put("id", -1);
             json.put("message", "kon niet geopend worden!");
+            json.put("success",false);
             System.out.println(json);
-            return json;
+            return json.toString();
         }
         // schedule the event
         eventController.addEvent(event);
         json.put("id", persistedEvent.getId());
         json.put("message", "succesvol geopend!");
+        json.put("success",true);
         System.out.println(json);
-        return json;
+        return json.toString();
     }
 
     @CrossOrigin()
