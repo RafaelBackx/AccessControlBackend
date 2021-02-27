@@ -32,6 +32,17 @@ public class EventController {
         biostarAPIRequests.logIn("admin","t");
     }
 
+    /**
+     *
+     * @param id de id van het event dat gecanceled moet worden
+     * @throws DatabaseException wanneer het event niet in de database gevonden kan worden
+     * @throws NoSuchAlgorithmException
+     * @throws KeyStoreException
+     * @throws KeyManagementException
+     *
+     * Deze functie annuleerd een event waarbij de deur terug gereleased wordt en het event uit de database verwijderd wordt
+     */
+
     public void cancelEvent(long id) throws DatabaseException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         System.out.println(id);
         var scheduledEvent = this.scheduledEvents.get(id);
@@ -45,6 +56,13 @@ public class EventController {
         scheduledEvent.cancel(true);
     }
 
+    /**
+     *
+     * @param event het event dat ingepland moet worden
+     *
+     * Deze functie neemt een event als parameter en wordt ingepland om over een bepaalde tijd terug gereleased te worden
+     * deze planner zit in memory en wordt dus niet gepersist naar een database, nadat de tijd verstreken is wordt het event ook verwijderd
+     */
     public void addEvent(Event event){
         final Runnable eventExecutor = new Runnable() {
             @Override

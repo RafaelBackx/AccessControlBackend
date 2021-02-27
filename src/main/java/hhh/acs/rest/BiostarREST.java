@@ -48,6 +48,20 @@ public class BiostarREST {
         System.out.println(result);
     }
 
+    /**
+     *
+     * @param event het event dat toegevoegd moet worden
+     * @return een json die aangeeft of het event goed is aangemaakt deze json bevat de id van het event,
+     * een string die zegt of het event goed is aangemaakt of niet en een boolean die aangeeft of het event goed is aangemaakt
+     * @throws NoSuchAlgorithmException
+     * @throws KeyStoreException
+     * @throws KeyManagementException
+     *
+     * Deze functie voegt een event toe aan de database en incrementeert een eventueel gekopelde widget om zo bij te houden hoe vaak een widget geactiveerd is
+     * het event wordt ook direct geactiveerd
+     */
+
+
     @CrossOrigin()
     @PostMapping("/create/event")
     public String addEvent(@RequestBody Event event) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {

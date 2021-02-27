@@ -36,6 +36,17 @@ public class BiostarAPIRequests {
         this.biostarApiUrl = biostarApiUrl;
     }
 
+    /**
+     *
+     * @param username username van de gebruiker waarmee ingelogd moet worden
+     * @param password wachtwoord van de user waarmee ingelogd moet worden
+     * @return deze functie returnt de "bs-session-id" header die gebruikt wordt als API key in alle post requests
+     * @throws NoSuchAlgorithmException
+     * @throws KeyStoreException
+     * @throws KeyManagementException
+     */
+
+
     public String logIn(String username, String password) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         String url = this.biostarApiUrl +"/api/login";
         String body = "{\n" +
@@ -50,8 +61,17 @@ public class BiostarAPIRequests {
         RestTemplate restTemplate = getRestTemplate();
         HttpEntity<String> result = restTemplate.exchange(url, HttpMethod.POST,request,String.class);
         this.sessionId = result.getHeaders().get("bs-session-id").get(0);
-        return result.getBody();
+        return this.sessionId;
     }
+
+    /**
+     *
+     * @param doorids array van deur id's die geopend, gelocked of gereleased moeten worden
+     * @param mode wat moet er met de deurs gebeuren? openen, locken of releasen
+     * @throws NoSuchAlgorithmException
+     * @throws KeyStoreException
+     * @throws KeyManagementException
+     */
 
     public void lockUnlockReleaseDoor(int[] doorids, Mode mode) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         String url = this.biostarApiUrl + "/api/doors/" + mode.getCommand();
@@ -83,6 +103,14 @@ public class BiostarAPIRequests {
             }
         }
     }
+
+    /**
+     * Helper functie die ssl verificatie trust om calls te maken naar de biostar api die op https draait
+     * @return deze functie returned een resttemplate waarmee alle api requests gemaakt worden
+     * @throws KeyStoreException
+     * @throws NoSuchAlgorithmException
+     * @throws KeyManagementException
+     */
 
     public RestTemplate getRestTemplate() throws KeyStoreException, NoSuchAlgorithmException, KeyManagementException {
         TrustStrategy acceptingTrustStrategy = new TrustStrategy() {
