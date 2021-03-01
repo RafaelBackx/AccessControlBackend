@@ -21,6 +21,7 @@ import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
@@ -75,10 +76,20 @@ public class BiostarREST implements InitializingBean {
     @PostMapping("/create/event")
     public String addEvent(@RequestBody Event event) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         System.out.println(event);
-        LocalDate currentDate = LocalDate.now();
+
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        Long unixtimestamp1 = currentDateTime.toEpochSecond(ZoneOffset.UTC);
+        System.out.println(unixtimestamp1);
+
+        /*LocalDate currentDate = LocalDate.now();
         LocalTime currentTime = LocalTime.now();
-        Long unixtimestamp = currentDate.toEpochSecond(currentTime, ZoneOffset.UTC);
-        event.setStartTime(unixtimestamp);
+        Long unixtimestamp2 = currentDate.toEpochSecond(currentTime, ZoneOffset.UTC);
+        System.out.println(unixtimestamp2);*/
+
+        event.setStartTime(unixtimestamp1);
+
+
+
         List<Door> persistedDoors = new ArrayList<>();
         for (Door door : event.getDoors()){
             try{
