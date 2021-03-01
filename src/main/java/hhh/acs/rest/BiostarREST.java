@@ -47,7 +47,7 @@ public class BiostarREST implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        biostarAPIRequests = new BiostarAPIRequests(backend.getUrl());
+        biostarAPIRequests = new BiostarAPIRequests(backend.getUrl() + ":" + backend.getPort());
         biostarAPIRequests.logIn("admin","t");
     }
 
