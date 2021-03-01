@@ -5,6 +5,7 @@ import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.json.JSONObject;
 import org.springframework.http.*;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
@@ -97,11 +98,36 @@ public class BiostarAPIRequests {
                 System.out.println("session invalidated, logging back in");
                 logIn("admin", "t");
                 lockUnlockReleaseDoor(doorids, mode);
-//            System.out.println(result.getBody());
             } else {
                 throw error;
             }
         }
+    }
+
+    public String forwardRequest(JSONObject json) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+        String method = json.getString("method");
+        String body = json.getString("body");
+        String url = json.getString("url");
+        String apiKey = json.getString("apiKey");
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("bs-session-id",apiKey);
+        HttpEntity<String> request = new HttpEntity<>(body,headers);
+        RestTemplate restTemplate = getRestTemplate();
+        HttpMethod httpMethod = HttpMethod.GET;
+        switch (method){
+            case "get":
+                httpMethod = HttpMethod.GET;
+                break;
+            case "post":
+                httpMethod = HttpMethod.POST;
+                break;
+            case "put":
+                httpMethod = HttpMethod.PUT;
+                break;
+        }
+        HttpEntity<String> result = restTemplate.exchange(url,httpMethod,request,String.class);
+        return result.getBody();
     }
 
     /**
