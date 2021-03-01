@@ -1,10 +1,14 @@
 package hhh.acs.rest;
 
+import hhh.acs.configuration.BackendProperties;
 import hhh.acs.controller.EventController;
 import hhh.acs.database.*;
 import hhh.acs.model.*;
 import org.json.JSONObject;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
@@ -26,9 +30,10 @@ import java.util.Set;
 
 @RestController()
 @RequestMapping("/api")
-public class BiostarREST {
-
-    private BiostarAPIRequests biostarAPIRequests = new BiostarAPIRequests("https://localhost");
+public class BiostarREST implements InitializingBean {
+    @Autowired
+    private BackendProperties backend;
+    private BiostarAPIRequests biostarAPIRequests;
     @Autowired
     private EventService eventRepository;
     @Autowired
@@ -38,7 +43,11 @@ public class BiostarREST {
     @Autowired
     private EventController eventController;
 
-    public BiostarREST() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+    public BiostarREST() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException { }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        biostarAPIRequests = new BiostarAPIRequests(backend.getUrl());
         biostarAPIRequests.logIn("admin","t");
     }
 

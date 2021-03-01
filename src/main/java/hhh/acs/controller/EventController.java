@@ -1,14 +1,20 @@
 package hhh.acs.controller;
 
+import hhh.acs.configuration.BackendProperties;
 import hhh.acs.database.DatabaseException;
 import hhh.acs.database.EventRepository;
 import hhh.acs.model.BiostarAPIRequests;
 import hhh.acs.model.Door;
 import hhh.acs.model.Event;
 import hhh.acs.model.Mode;
+import org.hibernate.annotations.common.reflection.XProperty;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -19,7 +25,9 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 @Service
-public class EventController {
+public class EventController implements InitializingBean {
+    @Autowired
+    private BackendProperties backend;
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     private BiostarAPIRequests biostarAPIRequests;
     @Autowired
@@ -28,7 +36,11 @@ public class EventController {
 
     public EventController() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         scheduledEvents = new HashMap<>();
-        biostarAPIRequests = new BiostarAPIRequests("https://localhost");
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        biostarAPIRequests = new BiostarAPIRequests(backend.getUrl());
         biostarAPIRequests.logIn("admin","t");
     }
 
