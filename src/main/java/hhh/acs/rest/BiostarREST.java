@@ -52,7 +52,7 @@ public class BiostarREST implements InitializingBean {
         biostarAPIRequests.logIn(backend.getUsername(),backend.getPassword());
     }
 
-    @CrossOrigin()
+    @CrossOrigin(origins = "http://192.168.235.128:8080")
     @PostMapping("/login")
     public String login() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         var result =  biostarAPIRequests.logIn(backend.getUsername(),backend.getPassword());
