@@ -23,8 +23,4 @@ public interface WidgetRepository extends JpaRepository<Widget,Integer> {
 
     @Query(nativeQuery = true, value = "select * from Widget w order by counter desc limit ?1")
     List<Widget> getTopUsedWidgets(int amount);
-//    @Modifying
-//    @Transactional()
-//    @Query("update Widget w set w.name = ?1, w.color = ?2, w.duration = ?3, w.icon =  ?4, w.doors = ?5 where w.id = ?6")
-//    void updateWidget(String name, String color, BigInteger duration, String icon,List<Door> doors, int id);
 }

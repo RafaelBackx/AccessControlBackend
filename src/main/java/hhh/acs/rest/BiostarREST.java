@@ -61,7 +61,6 @@ public class BiostarREST implements InitializingBean {
         String username = user.getString("login_id");
         String password = user.getString("password");
         var result =  biostarAPIRequests.logIn(username, password);
-        System.out.println(result);
         return result;
     }
 
@@ -82,11 +81,9 @@ public class BiostarREST implements InitializingBean {
     @CrossOrigin()
     @PostMapping("/create/event")
     public String addEvent(@RequestBody Event event) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
-        System.out.println(event);
 
         LocalDateTime currentDateTime = LocalDateTime.now();
         Long unixtimestamp1 = currentDateTime.toEpochSecond(ZoneOffset.UTC);
-        System.out.println(unixtimestamp1);
 
         /*LocalDate currentDate = LocalDate.now();
         LocalTime currentTime = LocalTime.now();
@@ -113,7 +110,6 @@ public class BiostarREST implements InitializingBean {
         if (widget != null){
             try{
                 Widget persistedWidget = widgetrepository.get(widget.getId());
-                System.out.println("incremented");
                 persistedWidget.increment();
                 widgetrepository.updateCounter(persistedWidget.getCounter(),persistedWidget.getId());
             }catch (DatabaseException e){
@@ -125,12 +121,10 @@ public class BiostarREST implements InitializingBean {
         JSONObject json = new JSONObject();
         try {
             biostarAPIRequests.lockUnlockReleaseDoor(ids,Mode.UNLOCK);
-            System.out.println("opened");
         } catch (HttpClientErrorException | HttpServerErrorException e) {
             json.put("id", -1);
             json.put("message", "kon niet geopend worden!");
             json.put("success",false);
-            System.out.println(json);
             return json.toString();
         }
         // schedule the event
@@ -138,7 +132,6 @@ public class BiostarREST implements InitializingBean {
         json.put("id", persistedEvent.getId());
         json.put("message", "succesvol geopend!");
         json.put("success",true);
-        System.out.println(json);
         return json.toString();
     }
 

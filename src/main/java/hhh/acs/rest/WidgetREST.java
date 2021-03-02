@@ -45,7 +45,6 @@ public class WidgetREST {
         try {
             return widgetService.get(id);
         } catch (DatabaseException e) {
-            System.out.println(e.getMessage());
             return null;
         }
     }
@@ -62,7 +61,6 @@ public class WidgetREST {
         try {
             return widgetService.delete(id);
         } catch (DatabaseException e) {
-            System.out.println(e.getMessage());
             return null;
         }
     }
@@ -73,7 +71,6 @@ public class WidgetREST {
         try {
             return widgetService.updateWidget(id, widget);
         } catch (DatabaseException e) {
-            System.out.println(e.getMessage());
             return null;
         }
     }

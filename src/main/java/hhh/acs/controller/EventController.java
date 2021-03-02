@@ -56,7 +56,6 @@ public class EventController implements InitializingBean {
      */
 
     public void cancelEvent(long id) throws DatabaseException, NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
-        System.out.println(id);
         var scheduledEvent = this.scheduledEvents.get(id);
         Event event = this.eventRepository.findById(id).orElseThrow(()->new DatabaseException("No such event" + id));
         List<Door> doors = event.getDoors();
@@ -81,7 +80,6 @@ public class EventController implements InitializingBean {
             public void run() {
                 var ids = transformDoorsToIds(event);
                 try {
-                    System.out.println("released");
                     biostarAPIRequests.lockUnlockReleaseDoor(ids, Mode.RELEASE);
                 } catch (NoSuchAlgorithmException e) {
                     e.printStackTrace();
@@ -90,9 +88,7 @@ public class EventController implements InitializingBean {
                 } catch (KeyManagementException e) {
                     e.printStackTrace();
                 }
-                System.out.println("deleting event");
                 eventRepository.delete(event);
-                System.out.println("event deleted");
             }
         };
         final ScheduledFuture<?> eventHandle = scheduler.schedule(eventExecutor,event.getDuration(), TimeUnit.SECONDS);
