@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityManager;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.xml.crypto.Data;
 import java.util.ArrayList;
@@ -27,7 +28,10 @@ public class WidgetREST {
 
     @CrossOrigin()
     @GetMapping("/widgets")
-    public List<Widget> getAll(){
+    public List<Widget> getAll(HttpServletResponse response){
+        response.setHeader("Access-Control-Allow-Origin","*");
+        response.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+        response.setHeader("Access-Control-Allow-Methods", "*");
         return widgetService.getAll();
     }
 

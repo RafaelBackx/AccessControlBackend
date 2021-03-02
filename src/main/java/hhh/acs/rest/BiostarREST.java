@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.xml.crypto.Data;
 import java.math.BigInteger;
 import java.net.MalformedURLException;
@@ -52,7 +53,7 @@ public class BiostarREST implements InitializingBean {
         biostarAPIRequests.logIn(backend.getUsername(),backend.getPassword());
     }
 
-    @CrossOrigin(origins = "http://192.168.235.128:8080")
+    @CrossOrigin()
     @PostMapping("/login")
     public String login() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         var result =  biostarAPIRequests.logIn(backend.getUsername(),backend.getPassword());
@@ -160,10 +161,20 @@ public class BiostarREST implements InitializingBean {
         return event;
     }
 
+    @RequestMapping(value = "/forward",method = RequestMethod.OPTIONS)
+    public void forwardOptions(HttpServletResponse response){
+        response.setHeader("Access-Control-Allow-Origin","*");
+        response.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+        response.setHeader("Access-Control-Allow-Methods", "*");
+    }
+
     @CrossOrigin()
     @PostMapping("/forward")
-    public String forwardRequest(@RequestBody String body) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+    public String forwardRequest(@RequestBody String body, HttpServletResponse response) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
         JSONObject jsonbody = new JSONObject(body);
+        response.setHeader("Access-Control-Allow-Origin","*");
+        response.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+        response.setHeader("Access-Control-Allow-Methods", "*");
         return biostarAPIRequests.forwardRequest(jsonbody);
     }
 }
