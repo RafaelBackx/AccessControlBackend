@@ -48,14 +48,14 @@ public class BiostarREST implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        biostarAPIRequests = new BiostarAPIRequests(backend.getUrl() + ":" + backend.getPort());
-        biostarAPIRequests.logIn("admin","t");
+        biostarAPIRequests = new BiostarAPIRequests(backend.getUrl() + ":" + backend.getPort(), backend);
+        biostarAPIRequests.logIn(backend.getUsername(),backend.getPassword());
     }
 
     @CrossOrigin()
     @PostMapping("/login")
     public String login() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
-        var result =  biostarAPIRequests.logIn("admin","t");
+        var result =  biostarAPIRequests.logIn(backend.getUsername(),backend.getPassword());
         System.out.println(result);
         return result;
     }

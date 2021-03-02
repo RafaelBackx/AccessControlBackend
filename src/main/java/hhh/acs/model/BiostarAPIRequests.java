@@ -1,5 +1,6 @@
 package hhh.acs.model;
 
+import hhh.acs.configuration.BackendProperties;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustStrategy;
@@ -32,9 +33,11 @@ import java.util.List;
 public class BiostarAPIRequests {
     private final String biostarApiUrl;
     private String sessionId;
+    private BackendProperties backend;
 
-    public  BiostarAPIRequests(String biostarApiUrl){
+    public  BiostarAPIRequests(String biostarApiUrl, BackendProperties backend){
         this.biostarApiUrl = biostarApiUrl;
+        this.backend = backend;
     }
 
     /**
@@ -96,7 +99,7 @@ public class BiostarAPIRequests {
         }catch (HttpClientErrorException | HttpServerErrorException error){
             if (error.getStatusCode() == HttpStatus.UNAUTHORIZED) {
                 System.out.println("session invalidated, logging back in");
-                logIn("admin", "t");
+                logIn(backend.getUsername(), backend.getPassword());
                 lockUnlockReleaseDoor(doorids, mode);
             } else {
                 throw error;
