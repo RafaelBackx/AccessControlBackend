@@ -13,6 +13,10 @@ import java.io.IOException;
 public class CorsFilter implements Filter {
     private final Logger log = LoggerFactory.getLogger(CorsFilter.class);
 
+    public CorsFilter(){
+        log.info("Corsfilter init");
+    }
+
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
 
