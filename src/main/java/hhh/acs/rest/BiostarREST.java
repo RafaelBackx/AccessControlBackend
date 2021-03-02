@@ -60,8 +60,13 @@ public class BiostarREST implements InitializingBean {
         JSONObject user = jsonObject.getJSONObject("User");
         String username = user.getString("login_id");
         String password = user.getString("password");
-        var result =  biostarAPIRequests.logIn(username, password);
-        return result;
+        try{
+            var result =  biostarAPIRequests.logIn(username, password);
+            return result;
+        }catch (HttpClientErrorException e){
+            return null;
+        }
+
     }
 
     /**
