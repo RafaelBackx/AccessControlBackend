@@ -3,6 +3,12 @@ package hhh.acs.configuration;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ *
+ * Klasse die alle application.properties variabelen van de back-end parsed
+ *
+ */
+
 @Configuration
 @ConfigurationProperties(prefix = "backend")
 public class BackendProperties {

@@ -55,8 +55,12 @@ public class BiostarREST implements InitializingBean {
 
     @CrossOrigin()
     @PostMapping("/login")
-    public String login() throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
-        var result =  biostarAPIRequests.logIn(backend.getUsername(),backend.getPassword());
+    public String login(@RequestBody String body) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+        JSONObject jsonObject = new JSONObject(body);
+        JSONObject user = jsonObject.getJSONObject("User");
+        String username = user.getString("login_id");
+        String password = user.getString("password");
+        var result =  biostarAPIRequests.logIn(username, password);
         System.out.println(result);
         return result;
     }
