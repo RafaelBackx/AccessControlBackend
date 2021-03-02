@@ -1,0 +1,38 @@
+# Version of the docker-compose file
+version: "3.4"
+
+services: 
+  database:
+    image: jonasdboeck/acs_database:latest
+    container_name: database
+    restart: always
+    ports: 
+      - "5433:5432"
+
+  backend:
+    image: jonasdboeck/acs_backend:latest
+    container_name: backend
+    depends_on: 
+      - database
+    restart: always
+    environment: 
+      POSTGRES_URL: 192.168.235.128
+      POSTGRES_PORT: 5433
+      POSTGRES_USER: postgres
+      POSTGRES_PASS: 583UhccC9zptEdWk
+      BACKEND_URL: https://192.168.0.125
+      BACKEND_PORT: 500
+    ports: 
+      - "9090:9090"
+
+  frontend:
+    image: rafaelbackx/acs_frontend:latest
+    container_name: frontend
+    depends_on:
+      - backend
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      - VUE_BIOSTAR_API_URL="https://192.168.0.249:500"
+      - VUE_BACKEND_API_URL="http://192.168.235.128:9090"
