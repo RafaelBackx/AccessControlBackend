@@ -128,7 +128,7 @@ public class BiostarREST implements InitializingBean {
             biostarAPIRequests.lockUnlockReleaseDoor(ids,Mode.UNLOCK);
         } catch (HttpClientErrorException | HttpServerErrorException e) {
             // cancel event wanneer event niet kan starten
-            eventController.cancelEvent(persistedEvent.getId());
+            eventRepository.deleteId(persistedEvent.getId());
             json.put("id", -1);
             json.put("message", "kon niet geopend worden!");
             json.put("success",false);
