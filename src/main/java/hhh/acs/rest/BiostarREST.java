@@ -85,7 +85,7 @@ public class BiostarREST implements InitializingBean {
 
     @CrossOrigin()
     @PostMapping("/create/event")
-    public String addEvent(@RequestBody Event event) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException {
+    public String addEvent(@RequestBody Event event) throws NoSuchAlgorithmException, KeyStoreException, KeyManagementException, DatabaseException {
 
         LocalDateTime currentDateTime = LocalDateTime.now();
         Long unixtimestamp1 = currentDateTime.toEpochSecond(ZoneOffset.UTC);
@@ -127,6 +127,8 @@ public class BiostarREST implements InitializingBean {
         try {
             biostarAPIRequests.lockUnlockReleaseDoor(ids,Mode.UNLOCK);
         } catch (HttpClientErrorException | HttpServerErrorException e) {
+            // cancel event wanneer event niet kan starten
+            eventController.cancelEvent(persistedEvent.getId());
             json.put("id", -1);
             json.put("message", "kon niet geopend worden!");
             json.put("success",false);
