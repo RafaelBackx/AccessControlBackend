@@ -35,6 +35,3 @@ services:
     restart: always
     ports:
       - "8080:8080"
-#    environment:
-#      - VUE_BIOSTAR_API_URL="https://192.168.0.249:500"
-#      - VUE_BACKEND_API_URL="http://192.168.235.128:9090"
